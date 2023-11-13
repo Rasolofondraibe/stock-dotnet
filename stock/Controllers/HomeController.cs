@@ -15,10 +15,8 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        Etatdestock etatdestock = new Etatdestock();
-        etatdestock.getetatdestockbydate("2023-11-05",null);
-        double a = etatdestock.calculmontant();
-        Console.WriteLine(a);
+        Mouvement mouvement = new Mouvement("2023-11-13","article1100",50,0,2100,"magasin1");
+        mouvement.insertionmouvement(null);
         return View();
     }
 

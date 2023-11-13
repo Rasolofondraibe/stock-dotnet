@@ -2,7 +2,7 @@ CREATE SEQUENCE magasinsequence
     INCREMENT 1
     MINVALUE 1
     START 1
-    CACHE 10
+    CACHE 1
     CYCLE;
 
 
@@ -10,5 +10,5 @@ CREATE SEQUENCE mouvementsequence
     INCREMENT 1
     MINVALUE 1
     START 1
-    CACHE 10
+    CACHE 1
     CYCLE;

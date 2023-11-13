@@ -18,10 +18,17 @@ CREATE TABLE mouvement(
     idmouvement VARCHAR(50) DEFAULT 'mouvement' || nextval('mouvementsequence')::TEXT PRIMARY KEY,
     date DATE,
     idarticle VARCHAR(50),
-    quantiteentree DOUBLE PRECISION,
-    quantitesortie DOUBLE PRECISION,
+    quantiteentree DOUBLE PRECISION DEFAULT 0,
+    quantitesortie DOUBLE PRECISION DEFAULT 0,
     prixunitaire DOUBLE PRECISION,
     idmagasin VARCHAR(50),
     FOREIGN KEY(idarticle) REFERENCES article(idarticle),
     FOREIGN KEY(idmagasin) REFERENCES magasin(idmagasin)
+);
+
+CREATE TABLE reste(
+    idmouvement VARCHAR(50),
+    date DATE,
+    reste DOUBLE PRECISION,
+    FOREIGN KEY(idmouvement) REFERENCES mouvement(idmouvement)
 );

@@ -8,3 +8,12 @@ mouvement as m
 JOIN article ON m.idarticle = article.idarticle
 JOIN magasin ON m.idmagasin = magasin.idmagasin
 ;
+
+
+CREATE VIEW mouvement_reste AS
+SELECT 
+m.*,
+(SELECT reste FROM reste WHERE reste.idmouvement = m.idmouvement ORDER BY date DESC LIMIT 1) as reste
+FROM mouvement as m
+WHERE quantitesortie = 0
+;

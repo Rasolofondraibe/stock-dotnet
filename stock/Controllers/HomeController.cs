@@ -15,11 +15,16 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
+        Etatdestock etatdestock = new Etatdestock();
+        etatdestock.getetatdestockbydate("2023-11-05",null);
+        double a = etatdestock.calculmontant();
+        Console.WriteLine(a);
         return View();
     }
 
     public IActionResult Privacy()
     {
+        
         return View();
     }
 

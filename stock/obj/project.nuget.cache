@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "YNuLGG4hWa7kFyn17//IqSpK+Zhp1ETeWdBLqAME+zVQrTWNh2uvB5Xx15lzi6+t80zObz67rXTLJ7oMI+bdpQ==",
+  "success": true,
+  "projectFilePath": "D:\\ratah\\c#\\stock-dotnet\\stock\\stock.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\thony\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\6.0.0\\microsoft.extensions.logging.abstractions.6.0.0.nupkg.sha512",
+    "C:\\Users\\thony\\.nuget\\packages\\npgsql\\7.0.6\\npgsql.7.0.6.nupkg.sha512"
+  ],
+  "logs": []
+}

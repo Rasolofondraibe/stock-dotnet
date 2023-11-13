@@ -1,0 +1,1 @@
+DELETE FROM mouvement WHERE idmouvement  = 'mouvement4' OR idmouvement  = 'mouvement5' OR idmouvement  = 'mouvement6';

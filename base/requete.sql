@@ -1,1 +1,3 @@
-DELETE FROM mouvement WHERE idmouvement  = 'mouvement4' OR idmouvement  = 'mouvement5' OR idmouvement  = 'mouvement6';
+DELETE FROM mouvement WHERE idmouvement  = 'mouvement21' OR idmouvement  = 'mouvement31' OR idmouvement  = 'mouvement41' OR idmouvement  = 'mouvement51' OR idmouvement  = 'mouvement81';
+DELETE FROM reste  WHERE idmouvement  = 'mouvement21' OR idmouvement  = 'mouvement31' OR idmouvement  = 'mouvement41' OR idmouvement  = 'mouvement51' OR idmouvement  = 'mouvement81';
+

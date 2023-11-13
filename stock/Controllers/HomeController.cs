@@ -15,9 +15,12 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        Mouvement mouvement = new Mouvement("2023-11-13","article1100",50,0,2100,"magasin1");
-        mouvement.todoentree(null);
-        Console.WriteLine(mouvement.getIdmouvement());
+        Mouvement mouvement = new Mouvement("2023-11-13","article1100",0,4,2300,"magasin1");
+        List<Mouvement> listemouvement = mouvement.changeresteoflistemouvement(null);
+        foreach(Mouvement m in listemouvement){
+            Console.WriteLine(m.getIdmouvement());
+            Console.WriteLine(m.getReste());
+        }
         return View();
     }
 

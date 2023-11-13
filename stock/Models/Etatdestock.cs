@@ -112,7 +112,9 @@ class Etatdestock{
         }catch(Exception e){
             Console.WriteLine(e.Message);
         }finally{
-            liaisonbase.Close();
+            if(liaisonbase != null){
+                liaisonbase.Close();
+            }
         }
     }
 

@@ -102,7 +102,7 @@ class Mouvement{
     }
 
     public void insertionmouvement(NpgsqlConnection liaisonbase){
-        String sql = "INSERT INTO mouvement(date,idarticle,quantiteentree,quantitesortie) VALUES (@date,@idarticle,@quantiteentree,@quantitesortie)";
+        String sql = "INSERT INTO mouvement(date,idarticle,quantiteentree,quantitesortie) VALUES (@date,@idarticle,@quantiteentree,@quantitesortie,@prixunitaire) RETURNING idmouvement";
         if(liaisonbase == null || liaisonbase.State == ConnectionState.Closed){
             Connexion connexion = new Connexion ();
             liaisonbase = connexion.createLiaisonBase();
@@ -114,12 +114,53 @@ class Mouvement{
             cmd.Parameters.AddWithValue("@idarticle", this.getIdarticle());
             cmd.Parameters.AddWithValue("@quantiteentree",this.getQuantiteentree());
             cmd.Parameters.AddWithValue("@quantitesortie",this.getQuantitesortie());
+            String insertedId = cmd.ExecuteScalar().ToString();
+            this.setIdmouvement(insertedId);
+        }catch(Exception e){
+            Console.WriteLine(e.Message);
+        }finally{
+            if(liaisonbase != null){
+                liaisonbase.Close();
+            }
+        }
+    }
+
+
+
+    public void insertionreste(NpgsqlConnection liaisonbase){
+        String sql = "INSERT INTO reste VALUES (@idmouvement,@date,@reste)";
+        if(liaisonbase == null || liaisonbase.State == ConnectionState.Closed){
+            Connexion connexion = new Connexion ();
+            liaisonbase = connexion.createLiaisonBase();
+            liaisonbase.Open();
+        }
+        try{
+            NpgsqlCommand cmd = new NpgsqlCommand(sql, liaisonbase);
+            cmd.Parameters.AddWithValue("@idmouvement", this.getIdmouvement());
+            cmd.Parameters.AddWithValue("@date", DateTime.Parse(this.getDate()));
+            cmd.Parameters.AddWithValue("@reste", this.getReste());
             cmd.ExecuteNonQuery();
         }catch(Exception e){
             Console.WriteLine(e.Message);
         }finally{
-            liaisonbase.Close();
+            if(liaisonbase != null){
+                liaisonbase.Close();
+            }
         }
     }
 
+
+    public void todoentree(NpgsqlConnection liaisonbase){
+        try{
+            this.insertionmouvement(liaisonbase);
+            this.setReste(this.getQuantiteentree());
+            this.insertionreste(liaisonbase);
+        }catch(Exception e){
+            Console.WriteLine(e.Message);
+        }finally{
+            if(liaisonbase != null){
+                liaisonbase.Close();
+            }
+        }
+    }
 }

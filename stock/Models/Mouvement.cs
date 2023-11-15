@@ -102,7 +102,7 @@ class Mouvement{
     }
 
     public void insertionmouvement(NpgsqlConnection liaisonbase){
-        String sql = "INSERT INTO mouvement(date,idarticle,quantiteentree,quantitesortie) VALUES (@date,@idarticle,@quantiteentree,@quantitesortie,@prixunitaire) RETURNING idmouvement";
+        String sql = "INSERT INTO mouvement(date,idarticle,quantiteentree,quantitesortie,prixunitaire,idmagasin) VALUES (@date,@idarticle,@quantiteentree,@quantitesortie,@prixunitaire,@idmagasin) RETURNING idmouvement";
         if(liaisonbase == null || liaisonbase.State == ConnectionState.Closed){
             Connexion connexion = new Connexion ();
             liaisonbase = connexion.createLiaisonBase();
@@ -114,6 +114,8 @@ class Mouvement{
             cmd.Parameters.AddWithValue("@idarticle", this.getIdarticle());
             cmd.Parameters.AddWithValue("@quantiteentree",this.getQuantiteentree());
             cmd.Parameters.AddWithValue("@quantitesortie",this.getQuantitesortie());
+            cmd.Parameters.AddWithValue("@prixunitaire",this.getPrixunitaire());
+            cmd.Parameters.AddWithValue("@idmagasin",this.getIdmagasin());
             String insertedId = cmd.ExecuteScalar().ToString();
             this.setIdmouvement(insertedId);
         }catch(Exception e){
@@ -125,10 +127,18 @@ class Mouvement{
         }
     }
 
+    public List<Mouvement> getmouvementwithreste(NpgsqlConnection liaisonbase){
+        Article article =  new Article();
+        article.getarticlebyidarticle(this.getIdarticle(),liaisonbase);
 
-
-    public void insertionreste(NpgsqlConnection liaisonbase){
-        String sql = "INSERT INTO reste VALUES (@idmouvement,@date,@reste)";
+        String sql = "";
+        if(article.getType() == "fifo"){
+            sql = "SELECT * FROM mouvement_reste WHERE reste>0 AND idarticle = @idarticle AND idmagasin = @idmagasin ORDER BY date";
+        }else if(article.getType() == "lifo"){
+            sql = "SELECT * FROM mouvement_reste WHERE reste>0 AND idarticle = @idarticle AND idmagasin = @idmagasin ORDER BY date DESC";
+        }
+        
+        List<Mouvement> listemouvement = new List<Mouvement>();
         if(liaisonbase == null || liaisonbase.State == ConnectionState.Closed){
             Connexion connexion = new Connexion ();
             liaisonbase = connexion.createLiaisonBase();
@@ -136,10 +146,13 @@ class Mouvement{
         }
         try{
             NpgsqlCommand cmd = new NpgsqlCommand(sql, liaisonbase);
-            cmd.Parameters.AddWithValue("@idmouvement", this.getIdmouvement());
-            cmd.Parameters.AddWithValue("@date", DateTime.Parse(this.getDate()));
-            cmd.Parameters.AddWithValue("@reste", this.getReste());
-            cmd.ExecuteNonQuery();
+            cmd.Parameters.AddWithValue("@idarticle", this.getIdarticle());
+            cmd.Parameters.AddWithValue("@idmagasin", this.getIdmagasin());
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+            while(reader.Read()){
+                Mouvement mouvement =  new Mouvement(reader.GetString(0),reader.GetDateTime(1).ToString(),reader.GetString(2),reader.GetDouble(3),reader.GetDouble(4),reader.GetDouble(5),reader.GetString(6),reader.GetDouble(7));
+                listemouvement.Add(mouvement);
+            }
         }catch(Exception e){
             Console.WriteLine(e.Message);
         }finally{
@@ -147,14 +160,22 @@ class Mouvement{
                 liaisonbase.Close();
             }
         }
+        return listemouvement;
     }
-
-
-    public void todoentree(NpgsqlConnection liaisonbase){
+    public void insertionsortie(String sortie,String entree,double difference,double reste,NpgsqlConnection liaisonbase){
+        String sql = "INSERT INTO sortie VALUES (@sortie,@entree,@difference,@reste)";
+        if(liaisonbase == null || liaisonbase.State == ConnectionState.Closed){
+            Connexion connexion = new Connexion ();
+            liaisonbase = connexion.createLiaisonBase();
+            liaisonbase.Open();
+        }
         try{
-            this.insertionmouvement(liaisonbase);
-            this.setReste(this.getQuantiteentree());
-            this.insertionreste(liaisonbase);
+            NpgsqlCommand cmd = new NpgsqlCommand(sql, liaisonbase);
+            cmd.Parameters.AddWithValue("@sortie", sortie);
+            cmd.Parameters.AddWithValue("@entree", entree);
+            cmd.Parameters.AddWithValue("@difference", difference);
+            cmd.Parameters.AddWithValue("@reste", reste);
+            cmd.ExecuteReader();
         }catch(Exception e){
             Console.WriteLine(e.Message);
         }finally{
@@ -163,4 +184,32 @@ class Mouvement{
             }
         }
     }
+
+    public void insertionsortiemouvement(NpgsqlConnection liaisonbase){
+        List<Mouvement> listemouvement  = this.getmouvementwithreste(liaisonbase);
+        double sortie  =  this.getQuantitesortie();
+        int i= 0;
+        double difference = 0;
+        double reste = 0;
+        while(sortie > 0 && i < listemouvement.Count){
+            if(listemouvement[i].getReste() < sortie){
+                difference = listemouvement[i].getReste();
+                reste = 0;
+                this.insertionsortie(this.getIdmouvement(),listemouvement[i].getIdmouvement(),difference,reste,liaisonbase);
+                sortie = sortie - listemouvement[i].getReste();
+            }else{
+                difference = sortie;
+                reste = listemouvement[i].getReste() - sortie;
+                this.insertionsortie(this.getIdmouvement(),listemouvement[i].getIdmouvement(),difference,reste,liaisonbase);
+                sortie = 0;
+            }
+            i++;
+        }
+    }
+
+    public void todosortie(NpgsqlConnection liaisonbase){
+        this.insertionmouvement(liaisonbase);
+        this.insertionsortiemouvement(liaisonbase);
+    }
+
 }

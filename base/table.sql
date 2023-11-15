@@ -25,3 +25,12 @@ CREATE TABLE mouvement(
     FOREIGN KEY(idarticle) REFERENCES article(idarticle),
     FOREIGN KEY(idmagasin) REFERENCES magasin(idmagasin)
 );
+
+CREATE TABLE sortie (
+    sortie VARCHAR(50),
+    entree VARCHAR(50),
+    difference DOUBLE PRECISION,
+    reste DOUBLE PRECISION,
+    FOREIGN KEY(sortie) REFERENCES mouvement(idmouvement),
+    FOREIGN KEY(entree) REFERENCES mouvement(idmouvement)
+);

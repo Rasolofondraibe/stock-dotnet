@@ -89,6 +89,7 @@ class Etatdestock{
         this.Nommagasin = nommagasin;
     }
     public void getetatdestockbydate(String date,NpgsqlConnection liaisonbase){
+        
         String sql = "SELECT * FROM etatdestock WHERE date <= @date ORDER BY date DESC LIMIT 1";
         if(liaisonbase == null || liaisonbase.State == ConnectionState.Closed){
             Connexion connexion = new Connexion ();

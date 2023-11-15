@@ -122,4 +122,5 @@ class Etatdestock{
     public double calculmontant(){
         return this.getQuantitereste() * this.getMoyenneprixunitaire();
     }
+
 }

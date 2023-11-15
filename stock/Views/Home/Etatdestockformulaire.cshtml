@@ -1,0 +1,37 @@
+@{
+    List<Magasin> listemagasin =  ViewBag.listemagasin;   
+}
+
+
+
+
+        <div class="row mt-4 justify-content-center align-items-center">
+            <form class="col-6" action="versetatdestocktable">
+                <h1>Etat de Stock</h1>
+                <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label">Date initial</label>
+                <input type="date" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Date finale</label>
+                    <input type="date" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Article</label>
+                    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                </div>
+
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Magasin</label>
+                    <select class="form-select" aria-label="Default select example">
+                        @foreach(Magasin magasin in listemagasin){
+                            <option value="">@magasin.getNommagasin()</option>
+                        }
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Valider</button>
+            </form>
+        </div>

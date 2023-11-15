@@ -15,11 +15,24 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        Mouvement mouvement = new Mouvement("2023-11-06","article1100",0,25,2000,"magasin1");
-        mouvement.todosortie(null);
-        Console.WriteLine(mouvement.getIdmouvement());
         return View();
     }
+
+    public IActionResult versetatdestockformulaire()
+    {
+        Magasin magasin = new Magasin();
+        List<Magasin> listemagasin  = magasin.getallmagasin(null);
+        ViewBag.listemagasin = listemagasin;
+        ViewData["Title"] = "Etat de Stock";
+        return View("Etatdestockformulaire");
+    }
+
+    public IActionResult versetatdestocktable()
+    {
+        ViewData["Title"] = "Etat de Stock";
+        return View("Etatdestocktable");
+    }
+
 
     public IActionResult Privacy()
     {

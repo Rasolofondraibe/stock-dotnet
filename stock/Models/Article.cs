@@ -63,7 +63,7 @@ class Article{
     }
 
     public List<Article> listesouscategoriearticle(String idarticle,NpgsqlConnection liaisonbase){
-        String sql = "SELECT * FROM article WHERE idarticle LIKE '@idarticle%s'";
+        String sql = "SELECT * FROM article WHERE idarticle LIKE @idarticle || '%'";
         List<Article> listearticle = new List<Article>();
         if(liaisonbase == null || liaisonbase.State == ConnectionState.Closed){
             Connexion connexion = new Connexion ();

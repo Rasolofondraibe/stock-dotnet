@@ -88,9 +88,11 @@ class Etatdestock{
     public void setNommagasin(String nommagasin){
         this.Nommagasin = nommagasin;
     }
-    public void getetatdestockbydate(String date,NpgsqlConnection liaisonbase){
+
+
+    public void getetatdestockbydate(String date,Article article,String idmagasin,NpgsqlConnection liaisonbase){
         
-        String sql = "SELECT * FROM etatdestock WHERE date <= @date ORDER BY date DESC LIMIT 1";
+        String sql = "SELECT * FROM etatdestock WHERE date <= @date AND idarticle = @idarticle AND idmagasin = @idmagasin ORDER BY date DESC LIMIT 1";
         if(liaisonbase == null || liaisonbase.State == ConnectionState.Closed){
             Connexion connexion = new Connexion ();
             liaisonbase = connexion.createLiaisonBase();
@@ -99,6 +101,8 @@ class Etatdestock{
         try{
             NpgsqlCommand cmd = new NpgsqlCommand(sql, liaisonbase);
             cmd.Parameters.AddWithValue("@date", DateTime.Parse(date));
+            cmd.Parameters.AddWithValue("@idarticle", article.getIdarticle());
+            cmd.Parameters.AddWithValue("@idmagasin", idmagasin);
             NpgsqlDataReader reader = cmd.ExecuteReader();
             if(reader.Read()){
                this.setIdmouvement(reader.GetString(0));
@@ -117,6 +121,19 @@ class Etatdestock{
                 liaisonbase.Close();
             }
         }
+    }
+
+    public List<Etatdestock> listeetatdestocksouscategorie(String date,String idmagasin,String referenceproduit,NpgsqlConnection liaisonbase){
+        Article article = new Article();
+        List<Article> listearticle = article.listesouscategoriearticle(referenceproduit,liaisonbase);
+        List<Etatdestock> listeetatdestock = new List<Etatdestock>();
+        foreach (Article a in listearticle)
+        {   
+            Etatdestock etatdestock = new Etatdestock();
+            etatdestock.getetatdestockbydate(date,a,idmagasin,liaisonbase);
+            listeetatdestock.Add(etatdestock);
+        }
+        return listeetatdestock;
     }
 
     public double calculmontant(){

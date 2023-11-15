@@ -61,4 +61,31 @@ class Article{
             }
         }
     }
+
+    public List<Article> listesouscategoriearticle(String idarticle,NpgsqlConnection liaisonbase){
+        String sql = "SELECT * FROM article WHERE idarticle LIKE '@idarticle%s'";
+        List<Article> listearticle = new List<Article>();
+        if(liaisonbase == null || liaisonbase.State == ConnectionState.Closed){
+            Connexion connexion = new Connexion ();
+            liaisonbase = connexion.createLiaisonBase();
+            liaisonbase.Open();
+        }
+
+        try{
+            NpgsqlCommand cmd = new NpgsqlCommand(sql, liaisonbase);
+            cmd.Parameters.AddWithValue("@idarticle", idarticle);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+            while(reader.Read()){
+                Article article = new Article(reader.GetString(0),reader.GetString(1),reader.GetString(2));
+                listearticle.Add(article);
+            }
+        }catch(Exception e){
+            Console.WriteLine(e.Message);
+        }finally{
+            if(liaisonbase != null){
+                liaisonbase.Close();
+            }
+        }
+        return listearticle;
+    }
 }

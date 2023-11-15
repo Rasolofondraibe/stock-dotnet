@@ -1,31 +1,40 @@
+@{
+  List<Etatdestock> listeetatdestockinitial = ViewBag.listeetatdestockinitial;
+  List<Etatdestock> listeetatdestockfinal = ViewBag.listeetatdestockfinal;
+  double montanttotal = ViewBag.sommemontant;
+}
+
 <div class="container mt-4">
         <h1>Etat de Stock</h1>
         <table class="table">
             <thead class="table-light">
               <tr>
-                <th scope="col">date</th>
-                <th scope="col">quantite</th>
+                <th scope="col">Article</th>
+                <th scope="col">date initial</th>
+                <th scope="col">quantite initial</th>
+                <th scope="col">date final</th>
+                <th scope="col">quantite final</th>
                 <th scope="col">prix unitaire</th>
                 <th scope="col">Montant</th>
               </tr>
             </thead>
             <tbody>
+
+              @for(int i=0;i<listeetatdestockinitial.Count;i++){
+            
+                <tr>
+                  <th scope="row">@listeetatdestockinitial[i].getarticleetatdestock().getNomarticle()</th>
+                  <td>@listeetatdestockinitial[i].getDate()</td>
+                  <td>@listeetatdestockinitial[i].getQuantitereste()</td>
+                  <td>@listeetatdestockfinal[i].getDate()</td>
+                  <td>@listeetatdestockfinal[i].getQuantitereste()</td>
+                  <td>@listeetatdestockfinal[i].getMoyenneprixunitaire()</td>
+                  <td>@listeetatdestockfinal[i].calculmontant()</td>
+                </tr>
+              }
               <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>09</td>
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>09</td>
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td colspan="2">Larry the Bird</td>
-                <td>09</td>
+                <th scope="row" colspan="6">Total Montant</th>
+                <td>@montanttotal</td>
               </tr>
             </tbody>
         </table>

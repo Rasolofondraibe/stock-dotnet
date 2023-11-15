@@ -140,4 +140,18 @@ class Etatdestock{
         return this.getQuantitereste() * this.getMoyenneprixunitaire();
     }
 
+    public Article getarticleetatdestock(){
+        Article article = new Article();
+         article.getarticlebyidarticle(this.getIdarticle(),null);
+         return article;
+    }
+
+    public double sommemontantetatdestock(String date,String idmagasin,String referenceproduit,NpgsqlConnection liaisonbase){
+        List<Etatdestock> listeetatdestock = this.listeetatdestocksouscategorie(date,idmagasin,referenceproduit,liaisonbase);
+        double montant = 0;
+        foreach(Etatdestock etatdestock in listeetatdestock){
+            montant = montant+etatdestock.calculmontant();
+        }   
+        return montant;
+    }
 }

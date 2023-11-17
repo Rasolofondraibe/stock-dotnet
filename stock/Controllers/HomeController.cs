@@ -42,6 +42,21 @@ public class HomeController : Controller
         return View("Etatdestocktable");
     }
 
+    public IActionResult verssortieformulaire()
+    {   
+        Magasin magasin = new Magasin();
+        List<Magasin> listemagasin  = magasin.getallmagasin(null);
+        ViewBag.listemagasin = listemagasin;
+        ViewData["Title"] = "Sortie";
+        return View("Sortieformulaire");
+    }
+
+    public IActionResult verssortietable(String date,String idarticle,double quantite,double prixunitaire,String idmagasin)
+    {  
+        Mouvement mouvement = new Mouvement(date,idarticle,0,quantite,prixunitaire,idmagasin);
+        mouvement.todosortie(null);
+        return View("Sortietable");
+    }
 
     public IActionResult Privacy()
     {

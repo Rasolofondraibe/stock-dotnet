@@ -212,4 +212,8 @@ class Mouvement{
         this.insertionsortiemouvement(liaisonbase);
     }
 
+   /* public boolean verificationstocksortie(String idarticle){
+        String sql = "SELECT * FR"
+    }*/
+
 }

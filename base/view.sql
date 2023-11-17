@@ -19,3 +19,11 @@ SELECT
     ) as reste
 FROM mouvement as m 
 WHERE quantitesortie = 0;
+
+CREATE VIEW sortie_view AS 
+SELECT sortie.*,mouvement_reste.date,mouvement_reste.idarticle,mouvement_reste.prixunitaire,magasin.nommagasin 
+FROM sortie
+JOIN mouvement_reste 
+ON sortie.entree = mouvement_reste.idmouvement
+JOIN magasin ON mouvement_reste.idmagasin = magasin.idmagasin
+;

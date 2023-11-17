@@ -131,7 +131,9 @@ class Etatdestock{
         {   
             Etatdestock etatdestock = new Etatdestock();
             etatdestock.getetatdestockbydate(date,a,idmagasin,liaisonbase);
-            listeetatdestock.Add(etatdestock);
+            if(etatdestock.getIdmouvement() != null){
+                listeetatdestock.Add(etatdestock);
+            }
         }
         return listeetatdestock;
     }
